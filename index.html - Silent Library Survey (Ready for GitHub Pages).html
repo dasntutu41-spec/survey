@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silent Library — Website Usability Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #faf9f4;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --accent: #297a2e;
+    --accent-soft: rgba(41,122,46,0.14);
+    --accent2: #d97706;
+    --accent2-soft: rgba(217,119,6,0.14);
+    --border: rgba(15,23,42,0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 { font-family: 'Comfortaa', cursive; font-weight: 700; }
+  
+  .header-hero {
+    background: linear-gradient(135deg, #297a2e 0%, #3d8f42 50%, #226626 100%);
+    color: #fff;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .header-hero h1 { font-size: 32px; margin: 0 0 12px; }
+  .header-hero p { opacity: 0.9; margin: 0; font-size: 16px; }
+  .header-eyebrow {
+    font-family: 'Comfortaa', cursive;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 8px;
+  }
+  
+  .tab-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    overflow-x: auto;
+  }
+  .tab-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 0 16px;
+  }
+  .tab-btn {
+    font-family: 'Comfortaa', cursive;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab-btn:hover { color: var(--accent); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(100,116,139,0.12);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .tab-btn.active .tab-badge {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .tab-btn.responses-tab { margin-left: auto; }
+  .tab-btn.responses-tab .tab-badge {
+    background: var(--accent2-soft);
+    color: var(--accent2);
+  }
+  
+  .content-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+  
+  .survey-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .survey-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .survey-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .survey-icon svg { width: 28px; height: 28px; }
+  .icon-silent { background: var(--accent-soft); }
+  .icon-silent svg { stroke: var(--accent); }
+  .icon-nlb { background: rgba(45,126,181,0.12); }
+  .icon-nlb svg { stroke: #2d7eb5; }
+  .icon-openlib { background: rgba(186,59,91,0.1); }
+  .icon-openlib svg { stroke: #ba3b5b; }
+  .icon-responses { background: var(--accent2-soft); }
+  .icon-responses svg { stroke: var(--accent2); }
+  
+  .survey-title { font-size: 22px; margin: 0 0 4px; color: var(--text); }
+  .survey-subtitle { color: var(--muted); margin: 0; font-size: 14px; }
+  
+  .section-label {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .section-divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    width: 60px;
+    margin-bottom: 20px;
+  }
+  .section-block { margin-bottom: 32px; }
+  
+  .question-block { margin-bottom: 24px; }
+  .question-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .required-mark { color: #dc2626; margin-left: 3px; }
+  
+  .radio-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+  }
+  .radio-option:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .radio-option.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .radio-option input {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+  }
+  
+  .csat-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 500px;
+  }
+  .csat-option {
+    flex-direction: column;
+    text-align: center;
+    padding: 14px 8px;
+    gap: 6px;
+  }
+  .csat-option .csat-num {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+  }
+  .csat-option .csat-label {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  
+  .nps-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+    max-width: 600px;
+  }
+  .nps-btn {
+    flex: 1;
+    padding: 12px 4px;
+    border: 1px solid rgba(15,23,42,0.12);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.15s;
+    min-width: 0;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .nps-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nps-btn.detractor.selected { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .nps-btn.passive.selected { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+  .nps-btn.promoter.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .nps-btn.detractor:hover { border-color: #dc2626; color: #dc2626; }
+  .nps-btn.passive:hover { border-color: var(--accent2); color: var(--accent2); }
+  .nps-btn.promoter:hover { border-color: var(--accent); color: var(--accent); }
+  .nps-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 0 4px;
+    max-width: 600px;
+  }
+  
+  .checkbox-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .checkbox-option:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .checkbox-option input {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+  }
+  
+  textarea, input[type="text"], select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(15,23,42,0.12);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: #fff;
+    color: var(--text);
+    resize: vertical;
+  }
+  textarea:focus, input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  
+  .error-msg {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: #226626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(41,122,46,0.25);
+  }
+  .btn-secondary {
+    background: #fff;
+    color: var(--text);
+    border: 1px solid rgba(15,23,42,0.15);
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-danger {
+    background: #fff;
+    color: #dc2626;
+    border: 1px solid rgba(220,38,38,0.3);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .btn-danger:hover {
+    background: #dc2626;
+    color: #fff;
+  }
+  
+  .toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 14px 22px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 1000;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    animation: slideIn 0.3s ease-out;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .metric-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+  .metric-value {
+    font-family: 'Comfortaa', cursive;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .metric-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  
+  .survey-stats {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .survey-stats h3 {
+    font-size: 18px;
+    margin: 0 0 16px;
+    color: var(--text);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    padding: 16px;
+    background: var(--accent-soft);
+    border-radius: 12px;
+    text-align: center;
+  }
+  .stat-box .stat-num {
+    font-family: 'Comfortaa', cursive;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-box .stat-lbl {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  
+  .nps-bar {
+    display: flex;
+    height: 28px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .nps-bar .detractors { background: #dc2626; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; min-width: 2px; }
+  .nps-bar .passives { background: var(--accent2); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; min-width: 2px; }
+  .nps-bar .promoters { background: var(--accent); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 700; min-width: 2px; }
+  .nps-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  
+  .response-list {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .response-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .response-header-bar h3 {
+    font-size: 18px;
+    margin: 0;
+    color: var(--text);
+  }
+  .response-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .response-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 100px 80px 100px;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    font-size: 13px;
+  }
+  .response-row:hover { background: var(--accent-soft); }
+  .response-row.head {
+    font-weight: 700;
+    color: var(--text);
+    background: rgba(15,23,42,0.03);
+  }
+  .response-row .survey-name { font-weight: 600; color: var(--text); }
+  .response-row .muted { color: var(--muted); font-size: 12px; }
+  
+  .empty-state {
+    background: #fff;
+    border-radius: 16px;
+    padding: 60px 24px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .empty-state h3 { font-size: 18px; color: var(--text); margin: 0 0 8px; }
+  .empty-state p { color: var(--muted); margin: 0; font-size: 14px; }
+  
+  .footer-note {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+  
+  .deploy-guide {
+    background: linear-gradient(135deg, rgba(41,122,46,0.08), rgba(217,119,6,0.06));
+    border: 1px solid var(--accent-soft);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .deploy-guide h3 {
+    font-size: 16px;
+    color: var(--accent);
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .deploy-guide ol {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .deploy-guide code {
+    background: rgba(0,0,0,0.06);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  
+  @media (max-width: 640px) {
+    .header-hero { padding: 32px 16px; }
+    .header-hero h1 { font-size: 24px; }
+    .survey-card { padding: 20px 16px; }
+    .csat-grid { grid-template-columns: repeat(5, 1fr); }
+    .nps-btn { padding: 10px 2px; font-size: 12px; }
+    .response-row { grid-template-columns: 40px 1fr 70px 60px; }
+    .response-row .col-date { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header-hero">
+  <div class="header-eyebrow">Silent Library UX Research</div>
+  <h1>Website Usability Survey</h1>
+  <p>Silent Library &nbsp;●&nbsp; NLB Singapore &nbsp;●&nbsp; Open Library</p>
+</div>
+
+<!-- Tab Navigation -->
+<nav class="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" onclick="switchSurvey('silent')" id="tab-silent">
+      <span class="tab-badge">1</span>Silent Library
+    </button>
+    <button class="tab-btn" onclick="switchSurvey('nlb')" id="tab-nlb">
+      <span class="tab-badge">2</span>NLB Singapore
+    </button>
+    <button class="tab-btn" onclick="switchSurvey('openlib')" id="tab-openlib">
+      <span class="tab-badge">3</span>Open Library
+    </button>
+    <button class="tab-btn responses-tab" onclick="switchSurvey('responses')" id="tab-responses">
+      <span class="tab-badge" id="response-count">0</span>Responses
+    </button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="content-wrap">
+
+  <!-- SILENT LIBRARY SURVEY -->
+  <section id="survey-silent" class="survey-content">
+    <div class="survey-card">
+      <div class="survey-header">
+        <div class="survey-icon icon-silent">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="survey-title">Silent Library Survey</h2>
+          <p class="survey-subtitle">Website: www.silentlibrary.sg &nbsp;|&nbsp; Estimated time: 5–7 minutes</p>
+        </div>
+      </div>
+      <div id="form-silent"></div>
+    </div>
+  </section>
+
+  <!-- NLB SINGAPORE SURVEY -->
+  <section id="survey-nlb" class="survey-content" style="display:none;">
+    <div class="survey-card">
+      <div class="survey-header">
+        <div class="survey-icon icon-nlb">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/>
+            <path d="M9 9h1M9 13h1M9 17h1M14 9h1M14 13h1M14 17h1"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="survey-title">NLB Singapore Survey</h2>
+          <p class="survey-subtitle">Website: www.nlb.gov.sg &nbsp;|&nbsp; Estimated time: 6–8 minutes</p>
+        </div>
+      </div>
+      <div id="form-nlb"></div>
+    </div>
+  </section>
+
+  <!-- OPEN LIBRARY SURVEY -->
+  <section id="survey-openlib" class="survey-content" style="display:none;">
+    <div class="survey-card">
+      <div class="survey-header">
+        <div class="survey-icon icon-openlib">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="survey-title">Open Library Survey</h2>
+          <p class="survey-subtitle">Website: openlibrary.org &nbsp;|&nbsp; Estimated time: 6–8 minutes</p>
+        </div>
+      </div>
+      <div id="form-openlib"></div>
+    </div>
+  </section>
+
+  <!-- RESPONSES PANEL -->
+  <section id="survey-responses" class="survey-content" style="display:none;">
+    <div id="responses-panel"></div>
+  </section>
+
+  <div class="footer-note">
+    Silent Library UX Research Survey &nbsp;|&nbsp; Data stored locally in your browser &nbsp;|&nbsp; Export CSV for analysis
+  </div>
+
+</main>
+
+<script>
+(function() {
+  // ============== SURVEY DEFINITIONS ==============
+  var surveys = {
+    silent: {
+      key: 'silent',
+      name: 'Silent Library',
+      sections: [
+        {
+          title: 'Section 1: Demographic Information',
+          questions: [
+            {id:'age',type:'radio',title:'1.1 Age Group',required:true,options:['Under 18','18 – 25','26 – 40','41 – 60','Over 60']},
+            {id:'role',type:'radio',title:'1.2 Primary Role',required:true,options:['Student','Working Professional','Retiree / Senior Reader','Parent / Caregiver','Library Staff','Other']},
+            {id:'device',type:'radio',title:'1.3 Device Most Often Used',required:true,options:['Desktop Computer','Laptop','Tablet','Mobile Phone']},
+            {id:'frequency',type:'radio',title:'1.4 How often do you use this library website?',required:true,options:['Daily','Several times a week','About once a week','A few times a month','First time today']}
+          ]
+        },
+        {
+          title: 'Section 2: User Satisfaction Rate (CSAT)',
+          questions: [
+            {id:'csat_overall',type:'csat',title:'2.1 Overall, how satisfied are you with the Silent Library website?',required:true},
+            {id:'csat_design',type:'csat',title:'2.2 Visual Design & Appearance',required:true},
+            {id:'csat_nav',type:'csat',title:'2.3 Ease of Navigation',required:true},
+            {id:'csat_search',type:'csat',title:'2.4 Book Search Function',required:true},
+            {id:'csat_filter',type:'csat',title:'2.5 Category Filtering',required:true},
+            {id:'csat_speed',type:'csat',title:'2.6 Page Loading Speed',required:true},
+            {id:'csat_mobile',type:'csat',title:'2.7 Mobile Responsiveness',required:true}
+          ]
+        },
+        {
+          title: 'Section 3: Net Promoter Score (NPS)',
+          questions: [
+            {id:'nps',type:'nps',title:'3.1 How likely are you to recommend the Silent Library website to a friend, colleague, or fellow reader?',required:true}
+          ]
+        },
+        {
+          title: 'Section 4: Task Experience',
+          questions: [
+            {id:'task_search',type:'radio',title:'4.1 How easy was it to find a specific book using the search function?',required:true,options:['Very Difficult','Difficult','Neutral','Easy','Very Easy']},
+            {id:'task_events',type:'radio',title:'4.2 How quickly could you navigate to the Events page?',required:true,options:['Very Slow','Slow','Moderate','Fast','Very Fast']},
+            {id:'task_contact',type:'radio',title:'4.3 How clear and accessible is the contact information?',required:true,options:['Very Unclear','Unclear','Neutral','Clear','Very Clear']},
+            {id:'issues',type:'radio',title:'4.4 Did you encounter any technical issues?',required:true,options:['Yes','No']}
+          ]
+        },
+        {
+          title: 'Section 5: Open Feedback',
+          questions: [
+            {id:'like_most',type:'textarea',title:'5.1 What do you like MOST about the Silent Library website?'},
+            {id:'improve',type:'textarea',title:'5.2 What could be improved to make your experience better?'},
+            {id:'comments',type:'textarea',title:'5.3 Any additional comments or suggestions?'}
+          ]
+        }
+      ]
+    },
+    nlb: {
+      key: 'nlb',
+      name: 'NLB Singapore',
+      sections: [
+        {
+          title: 'Section 1: Demographic Information',
+          questions: [
+            {id:'age',type:'radio',title:'1.1 Age Group',required:true,options:['Under 18','18 – 25','26 – 40','41 – 60','Over 60']},
+            {id:'role',type:'radio',title:'1.2 Primary Role',required:true,options:['Student','Working Professional','Retiree / Senior Reader','Parent / Caregiver','Researcher / Academic','Other']},
+            {id:'device',type:'radio',title:'1.3 Device Most Often Used',required:true,options:['Desktop Computer','Laptop','Tablet','Mobile Phone','NLB Mobile App']},
+            {id:'member',type:'radio',title:'1.4 Are you an NLB member?',required:true,options:['Yes, active member','Yes, but rarely use','No, not a member']},
+            {id:'frequency',type:'radio',title:'1.5 How often do you use NLB digital services?',required:true,options:['Daily','Several times a week','About once a week','A few times a month','First time today']}
+          ]
+        },
+        {
+          title: 'Section 2: User Satisfaction Rate (CSAT)',
+          questions: [
+            {id:'csat_overall',type:'csat',title:'2.1 Overall, how satisfied are you with the NLB website/app?',required:true},
+            {id:'csat_design',type:'csat',title:'2.2 Visual Design & Appearance',required:true},
+            {id:'csat_nav',type:'csat',title:'2.3 Ease of Navigation',required:true},
+            {id:'csat_catalog',type:'csat',title:'2.4 Book Catalogue Search',required:true},
+            {id:'csat_digital',type:'csat',title:'2.5 Digital Resources (eBooks, etc.)',required:true},
+            {id:'csat_events',type:'csat',title:'2.6 Events & Programmes Section',required:true},
+            {id:'csat_account',type:'csat',title:'2.7 Account Management Features',required:true},
+            {id:'csat_speed',type:'csat',title:'2.8 Page Loading Speed',required:true},
+            {id:'csat_mobile',type:'csat',title:'2.9 Mobile App / Mobile Experience',required:true},
+            {id:'csat_login',type:'csat',title:'2.10 Login / Authentication Process',required:true}
+          ]
+        },
+        {
+          title: 'Section 3: Net Promoter Score (NPS)',
+          questions: [
+            {id:'nps',type:'nps',title:'3.1 How likely are you to recommend the NLB website/app to others?',required:true}
+          ]
+        },
+        {
+          title: 'Section 4: Task Experience',
+          questions: [
+            {id:'task_find',type:'radio',title:'4.1 How easy was it to find a specific book in the catalogue?',required:true,options:['Very Difficult','Difficult','Neutral','Easy','Very Easy']},
+            {id:'task_complexity',type:'radio',title:'4.2 How would you rate the complexity of website navigation?',required:true,options:['Overwhelmingly complex','Somewhat complex','Moderate','Simple','Very simple and intuitive']},
+            {id:'task_login',type:'radio',title:'4.3 Did you need to login to perform basic tasks (browsing, searching)?',required:true,options:['Yes, login was required','Sometimes','No, could browse freely']},
+            {id:'task_ia',type:'radio',title:'4.4 How clear is the information architecture (organisation of content)?',required:true,options:['Very Confusing','Confusing','Neutral','Well Organised','Very Well Organised']}
+          ]
+        },
+        {
+          title: 'Section 5: Features Used',
+          questions: [
+            {id:'services',type:'checkbox',title:'5.1 Which NLB digital services have you used? (Select all that apply)',options:['eBook / Audiobook borrowing','eNewspaper / eMagazine reading','LinkedIn Learning / Udemy courses','Event registration','Loan / reservation management','Fee payment','None of the above']}
+          ]
+        },
+        {
+          title: 'Section 6: Open Feedback',
+          questions: [
+            {id:'like_most',type:'textarea',title:'6.1 What do you like MOST about the NLB website/app?'},
+            {id:'frustrating',type:'textarea',title:'6.2 What aspects do you find most frustrating or confusing?'},
+            {id:'change_one',type:'textarea',title:'6.3 If you could change ONE thing about the NLB website, what would it be?'}
+          ]
+        }
+      ]
+    },
+    openlib: {
+      key: 'openlib',
+      name: 'Open Library',
+      sections: [
+        {
+          title: 'Section 1: Demographic Information',
+          questions: [
+            {id:'age',type:'radio',title:'1.1 Age Group',required:true,options:['Under 18','18 – 25','26 – 40','41 – 60','Over 60']},
+            {id:'purpose',type:'radio',title:'1.2 Primary Purpose of Visit',required:true,options:['Academic Research','Recreational Reading','Professional Work','Finding Public Domain Books','Community Contribution','Other']},
+            {id:'device',type:'radio',title:'1.3 Device Most Often Used',required:true,options:['Desktop Computer','Laptop','Tablet','Mobile Phone']},
+            {id:'account',type:'radio',title:'1.4 Do you have an Open Library account?',required:true,options:['Yes, use it regularly','Yes, occasionally','No, browse without logging in']},
+            {id:'frequency',type:'radio',title:'1.5 How often do you use Open Library?',required:true,options:['Daily','Several times a week','About once a week','A few times a month','First time today']}
+          ]
+        },
+        {
+          title: 'Section 2: User Satisfaction Rate (CSAT)',
+          questions: [
+            {id:'csat_overall',type:'csat',title:'2.1 Overall, how satisfied are you with Open Library?',required:true},
+            {id:'csat_design',type:'csat',title:'2.2 Visual Design & Modernity',required:true},
+            {id:'csat_nav',type:'csat',title:'2.3 Ease of Navigation',required:true},
+            {id:'csat_search',type:'csat',title:'2.4 Search Functionality',required:true},
+            {id:'csat_browse',type:'csat',title:'2.5 Book Discovery / Browsing',required:true},
+            {id:'csat_reader',type:'csat',title:'2.6 Book Reader Interface',required:true},
+            {id:'csat_lending',type:'csat',title:'2.7 Digital Lending Process',required:true},
+            {id:'csat_speed',type:'csat',title:'2.8 Page Loading Speed',required:true},
+            {id:'csat_mobile',type:'csat',title:'2.9 Mobile Experience',required:true},
+            {id:'csat_login',type:'csat',title:'2.10 Login / Account Reliability',required:true}
+          ]
+        },
+        {
+          title: 'Section 3: Net Promoter Score (NPS)',
+          questions: [
+            {id:'nps',type:'nps',title:'3.1 How likely are you to recommend Open Library to others?',required:true}
+          ]
+        },
+        {
+          title: 'Section 4: Task Experience',
+          questions: [
+            {id:'task_borrow',type:'radio',title:'4.1 How easy was it to find and borrow/read a book?',required:true,options:['Very Difficult','Difficult','Neutral','Easy','Very Easy']},
+            {id:'task_browse',type:'radio',title:'4.2 How would you rate the browsing experience (visual appeal, cover images)?',required:true,options:['Very Poor','Poor','Average','Good','Excellent']},
+            {id:'task_reliability',type:'radio',title:'4.3 Have you experienced any reliability issues?',required:true,options:['Yes, frequent errors','Yes, occasional glitches','Rarely','Never experienced issues']},
+            {id:'task_consistency',type:'radio',title:'4.4 How consistent is the user interface across different sections?',required:true,options:['Very Inconsistent','Somewhat Inconsistent','Neutral','Consistent','Very Consistent']},
+            {id:'compare',type:'radio',title:'4.5 Compared to other digital libraries, where does Open Library stand?',required:true,options:['Significantly worse','Somewhat worse','About the same','Somewhat better','Significantly better']}
+          ]
+        },
+        {
+          title: 'Section 5: Open Feedback',
+          questions: [
+            {id:'value_most',type:'textarea',title:'5.1 What do you value MOST about Open Library?'},
+            {id:'issues',type:'textarea',title:'5.2 What usability issues have you encountered?'},
+            {id:'improve_ux',type:'textarea',title:'5.3 How could Open Library improve its user experience?'}
+          ]
+        }
+      ]
+    }
+  };
+
+  var currentSurvey = 'silent';
+  var responses = JSON.parse(localStorage.getItem('silent_library_survey_data') || '[]');
+
+  // ============== RENDER SURVEY ==============
+  function renderSurvey(surveyKey) {
+    var survey = surveys[surveyKey];
+    var container = document.getElementById('form-' + surveyKey);
+    var html = '';
+
+    survey.sections.forEach(function(section, si) {
+      html += '<div class="section-block">';
+      html += '<div class="section-label" style="margin-top:' + (si > 0 ? '8px' : '0') + ';">' + section.title + '</div>';
+      html += '<div class="section-divider"></div>';
+
+      section.questions.forEach(function(q) {
+        var qid = surveyKey + '_' + q.id;
+        html += '<div class="question-block" id="q-' + qid + '">';
+        html += '<div class="question-title">' + q.title;
+        if (q.required) html += '<span class="required-mark">*</span>';
+        html += '</div>';
+
+        if (q.type === 'radio') {
+          html += '<div class="radio-grid">';
+          q.options.forEach(function(opt) {
+            html += '<label class="radio-option" data-qid="' + qid + '" data-value="' + opt + '">';
+            html += '<input type="radio" name="' + qid + '" value="' + opt + '">';
+            html += '<span>' + opt + '</span>';
+            html += '</label>';
+          });
+          html += '</div>';
+        }
+
+        if (q.type === 'csat') {
+          html += '<div class="csat-grid">';
+          var labels = ['Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied'];
+          [1,2,3,4,5].forEach(function(v, i) {
+            html += '<label class="radio-option csat-option" data-qid="' + qid + '" data-value="' + v + '">';
+            html += '<input type="radio" name="' + qid + '" value="' + v + '" style="display:none;">';
+            html += '<div class="csat-num">' + v + '</div>';
+            html += '<div class="csat-label">' + labels[i] + '</div>';
+            html += '</label>';
+          });
+          html += '</div>';
+        }
+
+        if (q.type === 'nps') {
+          html += '<div style="max-width:600px;">';
+          html += '<div class="nps-row">';
+          for (var i = 0; i <= 10; i++) {
+            var cls = i <= 6 ? 'detractor' : (i <= 8 ? 'passive' : 'promoter');
+            html += '<button type="button" class="nps-btn ' + cls + '" data-qid="' + qid + '" data-value="' + i + '">' + i + '</button>';
+          }
+          html += '</div>';
+          html += '<div class="nps-labels">';
+          html += '<span><strong style="color:#dc2626;">0–6</strong> Detractors</span>';
+          html += '<span><strong style="color:#d97706;">7–8</strong> Passives</span>';
+          html += '<span><strong style="color:#297a2e;">9–10</strong> Promoters</span>';
+          html += '</div></div>';
+        }
+
+        if (q.type === 'checkbox') {
+          html += '<div class="checkbox-grid">';
+          q.options.forEach(function(opt) {
+            html += '<label class="checkbox-option">';
+            html += '<input type="checkbox" name="' + qid + '" value="' + opt + '">';
+            html += '<span>' + opt + '</span>';
+            html += '</label>';
+          });
+          html += '</div>';
+        }
+
+        if (q.type === 'textarea') {
+          html += '<textarea name="' + qid + '" rows="3" placeholder="Type your answer here..."></textarea>';
+        }
+
+        html += '<div class="error-msg" id="err-' + qid + '">This question is required.</div>';
+        html += '</div>';
+      });
+
+      html += '</div>';
+    });
+
+    html += '<div class="form-actions">';
+    html += '<button type="button" class="btn-secondary" onclick="clearForm(\'' + surveyKey + '\')">Clear Form</button>';
+    html += '<button type="button" class="btn-primary" onclick="submitSurvey(\'' + surveyKey + '\')">Submit Response</button>';
+    html += '</div>';
+
+    container.innerHTML = html;
+    attachRadioHandlers();
+    attachNPSHandlers();
+  }
+
+  function attachRadioHandlers() {
+    document.querySelectorAll('.radio-option').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        var qid = this.dataset.qid;
+        document.querySelectorAll('.radio-option[data-qid="' + qid + '"]').forEach(function(o) {
+          o.classList.remove('selected');
+        });
+        this.classList.add('selected');
+        var input = this.querySelector('input');
+        if (input) input.checked = true;
+        var errEl = document.getElementById('err-' + qid);
+        if (errEl) errEl.style.display = 'none';
+      });
+    });
+  }
+
+  function attachNPSHandlers() {
+    document.querySelectorAll('.nps-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var qid = this.dataset.qid;
+        document.querySelectorAll('.nps-btn[data-qid="' + qid + '"]').forEach(function(b) {
+          b.classList.remove('selected');
+        });
+        this.classList.add('selected');
+        var errEl = document.getElementById('err-' + qid);
+        if (errEl) errEl.style.display = 'none';
+      });
+    });
+  }
+
+  // ============== TAB SWITCHING ==============
+  window.switchSurvey = function(key) {
+    currentSurvey = key;
+
+    document.querySelectorAll('.tab-btn').forEach(function(tab) {
+      tab.classList.remove('active');
+    });
+
+    var activeTab = document.getElementById('tab-' + key);
+    if (activeTab) activeTab.classList.add('active');
+
+    document.querySelectorAll('.survey-content').forEach(function(c) {
+      c.style.display = 'none';
+    });
+    document.getElementById('survey-' + key).style.display = 'block';
+
+    if (key === 'responses') {
+      renderResponses();
+    }
+
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  };
+
+  window.clearForm = function(surveyKey) {
+    var container = document.getElementById('form-' + surveyKey);
+    container.querySelectorAll('input[type="radio"]').forEach(function(r) { r.checked = false; });
+    container.querySelectorAll('input[type="checkbox"]').forEach(function(c) { c.checked = false; });
+    container.querySelectorAll('textarea').forEach(function(t) { t.value = ''; });
+    container.querySelectorAll('.radio-option').forEach(function(o) { o.classList.remove('selected'); });
+    container.querySelectorAll('.nps-btn').forEach(function(b) { b.classList.remove('selected'); });
+    container.querySelectorAll('.error-msg').forEach(function(e) { e.style.display = 'none'; });
+  };
+
+  // ============== SUBMIT ==============
+  window.submitSurvey = function(surveyKey) {
+    var survey = surveys[surveyKey];
+    var valid = true;
+    var response = {
+      id: Date.now(),
+      survey: surveyKey,
+      surveyName: survey.name,
+      timestamp: new Date().toISOString(),
+      answers: {}
+    };
+
+    survey.sections.forEach(function(section) {
+      section.questions.forEach(function(q) {
+        var qid = surveyKey + '_' + q.id;
+        var val = null;
+
+        if (q.type === 'radio' || q.type === 'csat') {
+          var checked = document.querySelector('input[name="' + qid + '"]:checked');
+          val = checked ? checked.value : null;
+        }
+        if (q.type === 'nps') {
+          var selected = document.querySelector('.nps-btn[data-qid="' + qid + '"].selected');
+          val = selected ? selected.dataset.value : null;
+        }
+        if (q.type === 'checkbox') {
+          var checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
+          val = Array.from(checked).map(function(c) { return c.value; });
+        }
+        if (q.type === 'textarea') {
+          var ta = document.querySelector('textarea[name="' + qid + '"]');
+          val = ta ? ta.value.trim() : '';
+        }
+
+        response.answers[q.id] = val;
+
+        if (q.required && (val === null || val === '' || (Array.isArray(val) && val.length === 0))) {
+          valid = false;
+          var errEl = document.getElementById('err-' + qid);
+          if (errEl) errEl.style.display = 'block';
+        }
+      });
+    });
+
+    if (!valid) {
+      showToast('Please answer all required questions (*)', 'error');
+      return;
+    }
+
+    responses.push(response);
+    localStorage.setItem('silent_library_survey_data', JSON.stringify(responses));
+    updateResponseCount();
+    clearForm(surveyKey);
+    showToast('Response submitted successfully! Thank you.', 'success');
+  };
+
+  function showToast(msg, type) {
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.background = type === 'error' ? '#dc2626' : '#297a2e';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3500);
+  }
+
+  function updateResponseCount() {
+    var badge = document.getElementById('response-count');
+    if (badge) badge.textContent = responses.length;
+  }
+
+  // ============== RESPONSES PANEL ==============
+  function renderResponses() {
+    var container = document.getElementById('responses-panel');
+    var html = '';
+    var stats = calculateStats();
+
+    // GitHub Deploy Guide
+    html += '<div class="deploy-guide">';
+    html += '<h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> Deploy to GitHub Pages</h3>';
+    html += '<ol>';
+    html += '<li>Create a new GitHub repository (e.g., <code>library-survey</code>)</li>';
+    html += '<li>Upload this <code>index.html</code> file to the repository root</li>';
+    html += '<li>Go to <strong>Settings → Pages</strong> in your repository</li>';
+    html += '<li>Under "Source", select <strong>Deploy from a branch</strong></li>';
+    html += '<li>Choose <strong>main</strong> branch and <strong>/root</strong> folder</li>';
+    html += '<li>Click <strong>Save</strong> — your survey will be live at <code>https://your-username.github.io/library-survey/</code></li>';
+    html += '<li>Share the URL with participants to collect responses</li>';
+    html += '</ol>';
+    html += '<p style="margin:12px 0 0;font-size:13px;color:#64748b;"><strong>Note:</strong> Data is stored locally in each participant\'s browser. Ask them to click "Export CSV" on the Responses tab and send you the file, or connect a backend service for centralized collection.</p>';
+    html += '</div>';
+
+    // Stats overview
+    html += '<div class="metric-grid">';
+    html += '<div class="metric-card"><div class="metric-value">' + responses.length + '</div><div class="metric-label">Total Responses</div></div>';
+    html += '<div class="metric-card"><div class="metric-value" style="color:#2d7eb5;">' + stats.silent.count + '</div><div class="metric-label">Silent Library</div></div>';
+    html += '<div class="metric-card"><div class="metric-value" style="color:#c85a3a;">' + stats.nlb.count + '</div><div class="metric-label">NLB Singapore</div></div>';
+    html += '<div class="metric-card"><div class="metric-value" style="color:#ba3b5b;">' + stats.openlib.count + '</div><div class="metric-label">Open Library</div></div>';
+    html += '</div>';
+
+    // Per-survey detailed stats
+    ['silent','nlb','openlib'].forEach(function(key) {
+      var s = stats[key];
+      if (s.count === 0) return;
+
+      var colors = {silent:'#297a2e',nlb:'#2d7eb5',openlib:'#ba3b5b'};
+      var c = colors[key];
+
+      html += '<div class="survey-stats">';
+      html += '<h3>' + s.name + ' — Live Metrics</h3>';
+      html += '<div class="stats-grid">';
+      html += '<div class="stat-box"><div class="stat-num" style="color:' + c + ';">' + (s.csat ? s.csat.toFixed(2) : '—') + '</div><div class="stat-lbl">Avg CSAT (1–5)</div></div>';
+      html += '<div class="stat-box"><div class="stat-num" style="color:' + c + ';">' + (s.nps !== null ? (s.nps >= 0 ? '+' : '') + s.nps : '—') + '</div><div class="stat-lbl">NPS Score</div></div>';
+      html += '<div class="stat-box"><div class="stat-num" style="color:#297a2e;">' + (s.promoters !== null ? s.promoters + '%' : '—') + '</div><div class="stat-lbl">Promoters</div></div>';
+      html += '<div class="stat-box"><div class="stat-num" style="color:#dc2626;">' + (s.detractors !== null ? s.detractors + '%' : '—') + '</div><div class="stat-lbl">Detractors</div></div>';
+      html += '</div>';
+
+      if (s.nps !== null) {
+        var npsColor = s.nps >= 50 ? '#297a2e' : (s.nps >= 0 ? '#d97706' : '#dc2626');
+        html += '<div style="margin-bottom:8px;display:flex;justify-content:space-between;font-size:12px;color:#64748b;">';
+        html += '<span>NPS Distribution</span><span style="font-weight:700;color:' + npsColor + ';">NPS = ' + (s.nps >= 0 ? '+' : '') + s.nps + '</span></div>';
+        html += '<div class="nps-bar">';
+        html += '<div class="detractors" style="width:' + Math.max(s.detractors, 2) + '%;">' + s.detractors + '%</div>';
+        html += '<div class="passives" style="width:' + Math.max(s.passives, 2) + '%;">' + s.passives + '%</div>';
+        html += '<div class="promoters" style="width:' + Math.max(s.promoters, 2) + '%;">' + s.promoters + '%</div>';
+        html += '</div>';
+        html += '<div class="nps-bar-labels"><span>Detractors (0–6)</span><span>Passives (7–8)</span><span>Promoters (9–10)</span></div>';
+      }
+      html += '</div>';
+    });
+
+    // Response list
+    if (responses.length > 0) {
+      html += '<div class="response-list">';
+      html += '<div class="response-header-bar">';
+      html += '<h3>Individual Responses</h3>';
+      html += '<div class="response-actions">';
+      html += '<button class="btn-secondary" style="padding:10px 18px;font-size:13px;" onclick="exportCSV()">Export CSV</button>';
+      html += '<button class="btn-danger" onclick="clearAllData()">Clear All Data</button>';
+      html += '</div></div>';
+
+      html += '<div class="response-row head">';
+      html += '<div>#</div><div>Survey</div><div>CSAT</div><div>NPS</div><div class="col-date">Date</div>';
+      html += '</div>';
+
+      responses.slice().reverse().forEach(function(r, i) {
+        var csat = r.answers.csat_overall || '—';
+        var nps = r.answers.nps !== undefined && r.answers.nps !== null ? r.answers.nps : '—';
+        var date = new Date(r.timestamp).toLocaleDateString();
+        html += '<div class="response-row">';
+        html += '<div style="font-weight:600;color:#64748b;">' + (responses.length - i) + '</div>';
+        html += '<div class="survey-name">' + r.surveyName + '</div>';
+        html += '<div>' + csat + '</div><div>' + nps + '</div>';
+        html += '<div class="muted col-date">' + date + '</div>';
+        html += '</div>';
+      });
+
+      html += '</div>';
+    } else {
+      html += '<div class="empty-state">';
+      html += '<h3>No responses yet</h3>';
+      html += '<p>Complete a survey to see live metrics and individual responses here.</p>';
+      html += '</div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  function calculateStats() {
+    var stats = {
+      silent: {name:'Silent Library',count:0,csat:null,nps:null,promoters:null,passives:null,detractors:null},
+      nlb: {name:'NLB Singapore',count:0,csat:null,nps:null,promoters:null,passives:null,detractors:null},
+      openlib: {name:'Open Library',count:0,csat:null,nps:null,promoters:null,passives:null,detractors:null}
+    };
+
+    ['silent','nlb','openlib'].forEach(function(key) {
+      var s = stats[key];
+      var list = responses.filter(function(r) { return r.survey === key; });
+      s.count = list.length;
+
+      if (s.count > 0) {
+        var csatVals = list.map(function(r) { return parseFloat(r.answers.csat_overall) || 0; }).filter(function(v) { return v > 0; });
+        if (csatVals.length > 0) {
+          s.csat = csatVals.reduce(function(a,b) { return a + b; }, 0) / csatVals.length;
+        }
+
+        var npsVals = list.map(function(r) { return parseInt(r.answers.nps); }).filter(function(v) { return !isNaN(v); });
+        if (npsVals.length > 0) {
+          var promoters = npsVals.filter(function(v) { return v >= 9; }).length;
+          var passives = npsVals.filter(function(v) { return v === 7 || v === 8; }).length;
+          var detractors = npsVals.filter(function(v) { return v <= 6; }).length;
+          s.promoters = Math.round((promoters / npsVals.length) * 100);
+          s.passives = Math.round((passives / npsVals.length) * 100);
+          s.detractors = Math.round((detractors / npsVals.length) * 100);
+          s.nps = s.promoters - s.detractors;
+        }
+      }
+    });
+
+    return stats;
+  }
+
+  window.exportCSV = function() {
+    if (responses.length === 0) {
+      showToast('No responses to export', 'error');
+      return;
+    }
+
+    var headers = ['ID','Survey','Timestamp','CSAT_Overall','NPS','Age','Role','Device','Frequency'];
+    var rows = responses.map(function(r) {
+      return [
+        r.id,
+        r.surveyName,
+        new Date(r.timestamp).toLocaleString(),
+        r.answers.csat_overall || '',
+        r.answers.nps !== undefined && r.answers.nps !== null ? r.answers.nps : '',
+        r.answers.age || '',
+        r.answers.role || '',
+        r.answers.device || '',
+        r.answers.frequency || ''
+      ];
+    });
+
+    var csv = [headers].concat(rows).map(function(row) {
+      return row.map(function(cell) {
+        cell = String(cell).replace(/"/g, '""');
+        return /[",\n]/.test(cell) ? '"' + cell + '"' : cell;
+      }).join(',');
+    }).join('\n');
+
+    var blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'library_survey_responses_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exported successfully!', 'success');
+  };
+
+  window.clearAllData = function() {
+    if (confirm('Are you sure you want to delete ALL ' + responses.length + ' response(s)? This cannot be undone.')) {
+      responses = [];
+      localStorage.removeItem('silent_library_survey_data');
+      updateResponseCount();
+      renderResponses();
+      showToast('All data cleared', 'success');
+    }
+  };
+
+  // ============== INIT ==============
+  renderSurvey('silent');
+  renderSurvey('nlb');
+  renderSurvey('openlib');
+  updateResponseCount();
+  switchSurvey('silent');
+
+})();
+</script>
+
+</body>
+</html>
